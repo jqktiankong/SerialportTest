@@ -13,14 +13,25 @@ import java.security.InvalidParameterException;
 import android_serialport_api.SerialPort;
 
 public class SerialPortUtil {
-    private SerialPort serialPort;
-    private FileInputStream fileInputStream;
-    private FileOutputStream fileOutputStream;
+    private static SerialPort serialPort;
+    private static FileInputStream fileInputStream;
+    private static FileOutputStream fileOutputStream;
 
-    public boolean open(File device, int baudrate, int flags) {
+    /**
+     * @param device   串口地址
+     * @param baudrate 波特率
+     * @param parity   效验方式，0无，1奇效验，2偶效验
+     * @param dataBits 数据位
+     * @param stopBit  停止位
+     * @param flags
+     * @return
+     */
+    public static boolean open(File device, int baudrate, int parity, int dataBits,
+                               int stopBit, int flags) {
         try {
             /* 打开串口 */
-            serialPort = new SerialPort(device, baudrate, flags);
+            serialPort = new SerialPort(device, baudrate, parity, dataBits,
+                    stopBit, flags);
             fileOutputStream = (FileOutputStream) serialPort.getOutputStream();
             fileInputStream = (FileInputStream) serialPort.getInputStream();
 
@@ -36,15 +47,17 @@ public class SerialPortUtil {
         return false;
     }
 
-    public FileInputStream getInputStream() {
+    public static FileInputStream getInputStream() {
         return fileInputStream;
     }
 
-    public FileOutputStream getOutputStream() {
+    public static FileOutputStream getOutputStream() {
         return fileOutputStream;
     }
 
-    public void close() {
-        serialPort.close();
+    public static void close() {
+        if (serialPort != null) {
+            serialPort.close();
+        }
     }
 }

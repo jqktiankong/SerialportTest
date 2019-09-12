@@ -3,79 +3,59 @@ package com.jqk.serialporttest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidParameterException;
-
-import android_serialport_api.SerialPort;
+import com.jqk.serialporttest.util.ThreadUtil;
 
 public class MainActivity extends AppCompatActivity {
-    private SerialPort serialPort;
-    private InputStream inputStream;
-
-    private ReadThread mReadThread;
-
-    private class ReadThread extends Thread {
-
-        @Override
-        public void run() {
-            super.run();
-            while (!isInterrupted()) {
-                int size;
-                try {
-                    byte[] buffer = new byte[64];
-                    if (inputStream == null) return;
-                    size = inputStream.read(buffer);
-                    if (size > 0) {
-                        onDataReceived(buffer, size);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-        }
-    }
-
-    protected void onDataReceived(final byte[] buffer, final int size) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Log.d("jiqingke", (new String(buffer, 0, size)));
-            }
-        });
-    }
+    private Button open;
+    private Button close;
+    private Button send;
+    private Button destroy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        open = findViewById(R.id.open);
+        close = findViewById(R.id.close);
+        send = findViewById(R.id.send);
+        destroy = findViewById(R.id.destroy);
 
-        try {
-            /* 打开串口 */
-            serialPort = new SerialPort(new File("/dev/" + "ttyS2"), 38400, 0);
-            //  mOutputStream = (FileOutputStream) mSerialPort.getOutputStream();
-            inputStream = serialPort.getInputStream();
+        open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ThreadUtil.startRead();
+            }
+        });
 
-            /* Create a receiving thread */
-            mReadThread = new ReadThread();/* 创建串口处理线程 */
-            mReadThread.start();
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ThreadUtil.stopRead();
+            }
+        });
 
-        } catch (SecurityException e) {
-            Log.d("jiqingke", "e = " + e.toString());
-        } catch (IOException e) {
-            Log.d("jiqingke", "e = " + e.toString());
-        } catch (InvalidParameterException e) {
-            Log.d("jiqingke", "e = " + e.toString());
-        }
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ThreadUtil.sendMsg();
+            }
+        });
+
+        destroy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        serialPort.close();
+        ThreadUtil.stopRead();
     }
 }
