@@ -21,11 +21,10 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
+import android.serialport.api.SerialPortFinder;
 
 import com.jqk.serialporttest.R;
-import com.jqk.serialporttest.sample.Application;
 
-import android_serialport_api.SerialPortFinder;
 
 public class SerialPortPreferences extends PreferenceActivity {
 

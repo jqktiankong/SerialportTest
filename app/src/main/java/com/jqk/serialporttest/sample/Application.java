@@ -16,14 +16,13 @@
 
 package com.jqk.serialporttest.sample;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
 
 import android.content.SharedPreferences;
-import android_serialport_api.SerialPort;
-import android_serialport_api.SerialPortFinder;
+import android.serialport.api.SerialPort;
+import android.serialport.api.SerialPortFinder;
 
 public class Application extends android.app.Application {
 

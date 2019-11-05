@@ -26,10 +26,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
+import android.serialport.api.SerialPort;
 
 import com.jqk.serialporttest.R;
 
-import android_serialport_api.SerialPort;
 
 public abstract class SerialPortActivity extends Activity {
 

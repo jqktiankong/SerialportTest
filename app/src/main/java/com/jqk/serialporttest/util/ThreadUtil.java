@@ -11,14 +11,14 @@ public class ThreadUtil {
 
     public static void startRead() {
         open = true;
-        File file = new File("/dev/" + "ttyS2");
-        int baudrate = 38400;
+        File file = new File("/dev/" + "ttyS4");
+        int baudrate = 115200;
         int parity = 1;
         int dataBits = 8;
         int stopBit = 1;
         int floats = 0;
 
-        if (SerialPortUtil.open(file, baudrate, 1, 8, 1, 0)) {
+        if (SerialPortUtil.open(file, baudrate, 0, 8, 1, 0)) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -56,7 +56,7 @@ public class ThreadUtil {
             public void run() {
                 try {
                     OutputStream os = SerialPortUtil.getOutputStream();
-                    byte[] b = {(byte) 0xAA, (byte) 0x75, (byte) 0x42, (byte) 0x00, (byte) 0x01, (byte) 0x00, (byte) 0x01, (byte) 0x9d};
+                    byte[] b = {(byte) 0x5A, (byte) 0xFF, (byte) 0x00, (byte) 0x02, (byte) 0xA0, (byte) 0x07};
                     os.write(b);
                 } catch (Exception e) {
                     L.d("e = " + e.toString());

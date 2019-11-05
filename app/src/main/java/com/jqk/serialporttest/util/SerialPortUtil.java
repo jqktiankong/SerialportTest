@@ -1,8 +1,7 @@
 package com.jqk.serialporttest.util;
 
+import android.serialport.api.SerialPort;
 import android.util.Log;
-
-import com.jqk.serialporttest.MainActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
-import android_serialport_api.SerialPort;
 
 public class SerialPortUtil {
     private static SerialPort serialPort;
