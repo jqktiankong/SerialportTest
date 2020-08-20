@@ -119,15 +119,15 @@ JNIEXPORT jobject JNICALL Java_android_serialport_api_SerialPort_open
             LOGE("Invalid baudrate");
             return NULL;
         }
-        if (parity <0 || parity>2) {
+        if (parity < 0 || parity > 2) {
             LOGE("Invalid parity");
             return NULL;
         }
-        if (dataBits <5 || dataBits>8) {
+        if (dataBits < 5 || dataBits > 8) {
             LOGE("Invalid dataBits");
             return NULL;
         }
-        if (stopBit <1 || stopBit>2) {
+        if (stopBit < 1 || stopBit > 2) {
             LOGE("Invalid stopBit");
             return NULL;
         }
@@ -136,13 +136,12 @@ JNIEXPORT jobject JNICALL Java_android_serialport_api_SerialPort_open
     /* Opening device */
     {
         jboolean iscopy;
-        const char *path_utf = (*env)->GetStringUTFChars(env,path, &iscopy);
+        const char *path_utf = (*env)->GetStringUTFChars(env, path, &iscopy);
         LOGD("Opening serial port %s with flags 0x%x", path_utf, O_RDWR | flags);
         fd = open(path_utf, O_RDWR | flags);
         LOGD("open() fd = %d", fd);
-        (*env)->ReleaseStringUTFChars(env,path, path_utf);
-        if (fd == -1)
-        {
+        (*env)->ReleaseStringUTFChars(env, path, path_utf);
+        if (fd == -1) {
             LOGE("Cannot open port");
             return NULL;
         }
@@ -152,8 +151,7 @@ JNIEXPORT jobject JNICALL Java_android_serialport_api_SerialPort_open
     {
         struct termios cfg;
         LOGD("Configuring serial port");
-        if (tcgetattr(fd, &cfg))
-        {
+        if (tcgetattr(fd, &cfg)) {
             LOGE("tcgetattr() failed");
             close(fd);
             return NULL;
@@ -164,24 +162,50 @@ JNIEXPORT jobject JNICALL Java_android_serialport_api_SerialPort_open
         cfsetospeed(&cfg, speed);
 
         /* More attribute set */
-        switch (parity) {
-            case 0: break;
-            case 1: cfg.c_cflag |= PARENB; break;
-            case 2: cfg.c_cflag &= ~PARODD; break;
+
+        switch (parity) //设置校验位
+        {
+            case 1:
+                cfg.c_cflag |= (PARODD | PARENB);
+                cfg.c_iflag |= INPCK;
+                LOGE("设置校验位O奇校验位");
+                break;
+            case 2:
+                cfg.c_cflag |= PARENB;
+                cfg.c_cflag &= ~PARODD;
+                cfg.c_iflag |= INPCK;
+                LOGE("设置校验位E偶校验位");
+                break;
+            default:
+                cfg.c_cflag &= ~PARENB; //清除校验位
+                LOGE("设置校验位默认N");
+                break;
+
         }
         switch (dataBits) {
-            case 5: cfg.c_cflag |= CS5; break;
-            case 6: cfg.c_cflag |= CS6; break;
-            case 7: cfg.c_cflag |= CS7; break;
-            case 8: cfg.c_cflag |= CS8; break;
+            case 5:
+                cfg.c_cflag |= CS5;
+                break;
+            case 6:
+                cfg.c_cflag |= CS6;
+                break;
+            case 7:
+                cfg.c_cflag |= CS7;
+                break;
+            case 8:
+                cfg.c_cflag |= CS8;
+                break;
         }
         switch (stopBit) {
-            case 1: cfg.c_cflag &= ~CSTOPB; break;
-            case 2: cfg.c_cflag |= CSTOPB; break;
+            case 1:
+                cfg.c_cflag &= ~CSTOPB;
+                break;
+            case 2:
+                cfg.c_cflag |= CSTOPB;
+                break;
         }
 
-        if (tcsetattr(fd, TCSANOW, &cfg))
-        {
+        if (tcsetattr(fd, TCSANOW, &cfg)) {
             LOGE("tcsetattr() failed");
             close(fd);
             /* TODO: throw an exception */
