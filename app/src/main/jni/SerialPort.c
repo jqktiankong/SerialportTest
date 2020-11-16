@@ -165,6 +165,7 @@ JNIEXPORT jobject JNICALL Java_android_serialport_api_SerialPort_open
 
         switch (parity) //设置校验位
         {
+
             case 1:
                 cfg.c_cflag |= (PARODD | PARENB);
                 cfg.c_iflag |= INPCK;

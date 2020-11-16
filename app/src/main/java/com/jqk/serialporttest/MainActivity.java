@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                device = new File("/dev/" + "ttyS2");
+                device = new File("/dev/" + "ttyS4");
                 if (!device.canRead() || !device.canWrite()) {
                     try {
                         // Missing read/write permission, trying to chmod the file

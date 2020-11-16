@@ -20,7 +20,7 @@ public class ThreadUtil {
         int stopBit = 1;
         int floats = 0;
 
-        if (SerialPortUtil.open(file, baudrate, 1, 8, 1, 0)) {
+        if (SerialPortUtil.open(file, baudrate, parity, dataBits, stopBit, floats)) {
             L.d("jiqingke", "打开四方位串口成功");
             new Thread(new Runnable() {
                 @Override
@@ -70,18 +70,11 @@ public class ThreadUtil {
             public void run() {
                 try {
                     OutputStream os = SerialPortUtil.getOutputStream();
-//                    7e03010005000c8001a80165467e
-//                    AA7542000100019D
-                    byte[] b = {(byte) 0x7e, (byte) 0x03, (byte) 0x01, (byte) 0x00, (byte) 0x05, (byte) 0x00, (byte) 0x40,
-                            (byte) 0x80, (byte) 0x01, (byte) 0x72, (byte) 0x01, (byte) 0x43, (byte) 0xf6, (byte) 0x7e};
-                    byte[] b2 = {(byte) 0x7e, (byte) 0x03, (byte) 0x01, (byte) 0x00, (byte) 0x05, (byte) 0x00, (byte) 0x3f,
-                            (byte) 0x81, (byte) 0x01, (byte) 0x72, (byte) 0x01, (byte) 0x43, (byte) 0x88, (byte) 0x7e};
-                    byte[] b3 = new byte[]{(byte) 0xAA, 0x75, 0x42, 0x00, 0x01, 0x00, 0x01, (byte)0x9D};
-//                    os.write(b);
+                    byte[] b = {0x01, 0x02, 0x03, 0x04};
 
-                    os.write(b3);
+                    os.write(b);
 
-                    L.d("jiqingke", "发送成功 = " + FormatUtil.bytesToHexString(b3));
+                    L.d("jiqingke", "发送成功 = " + FormatUtil.bytesToHexString(b));
                 } catch (Exception e) {
                     L.d("e = " + e.toString());
                 }
